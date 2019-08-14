@@ -45,10 +45,6 @@ WPEWEBKIT_DEPENDENCIES += wpebackend libgcrypt libgles libegl libepoxy cairo fre
 	fontconfig harfbuzz libxml2 libxslt sqlite libsoup jpeg libpng
 endif
 
-ifneq ($(BR2_GCC_VERSION_6_X), y)
-WPEWEBKIT_DEPENDENCIES += host-wpewebkit-gcc
-endif
-
 WPEWEBKIT_EXTRA_FLAGS = -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 
 ifeq ($(BR2_PACKAGE_NINJA),y)

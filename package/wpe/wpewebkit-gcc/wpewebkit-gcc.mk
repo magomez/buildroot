@@ -80,16 +80,16 @@ HOST_WPEWEBKIT_GCC_COMMON_DEPENDENCIES = \
 	$(if $(BR2_BINFMT_FLAT),host-elf2flt)
 
 HOST_WPEWEBKIT_GCC_COMMON_CONF_OPTS = \
-	--prefix=/usr/local \
+	--prefix=$(HOST_DIR)/usr/local \
 	--target=$(GNU_TARGET_NAME) \
 	--with-sysroot=$(STAGING_DIR) \
 	--disable-__cxa_atexit \
 	--with-gnu-ld \
 	--disable-libssp \
 	--disable-multilib \
-	--with-gmp=$(HOST_DIR)/usr \
-	--with-mpc=$(HOST_DIR)/usr \
-	--with-mpfr=$(HOST_DIR)/usr \
+	--with-gmp=$(HOST_DIR)/usr/local \
+	--with-mpc=$(HOST_DIR)/usr/local \
+	--with-mpfr=$(HOST_DIR)/usr/local \
 	--with-pkgversion="Buildroot $(BR2_VERSION_FULL)" \
 	--with-bugurl="http://bugs.buildroot.net/"
 
