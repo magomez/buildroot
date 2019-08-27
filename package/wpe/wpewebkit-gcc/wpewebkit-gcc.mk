@@ -341,4 +341,3 @@ define HOST_WPEWEBKIT_GCC_INSTALL_WRAPPER_AND_SIMPLE_SYMLINKS
 
 endef
 
-include $(sort $(wildcard package/wpe/wpewebkit-gcc/*/*.mk))
