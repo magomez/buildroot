@@ -35,6 +35,7 @@ libgstadaptivedemux-1.0.so
 libgstallocators-1.0.so
 libgstapp-1.0.so
 libgstaudio-1.0.so
+libgstautodetect.so
 libgstbadaudio-1.0.so
 libgstbadbase-1.0.so
 libgstbadvideo-1.0.so
@@ -87,7 +88,7 @@ libwebsocket.so
 libWPE.so
 libWPE-platform.so
 libWPEWebInspectorResources.so
-libWPEWebKit.so
+libWPEWebKit-0.1.so
 libxkbcommon.so
 libxml2.so
 libxslt.so
@@ -104,6 +105,8 @@ libiconv.so.2
 ca-certificates.crt
 libWPEFrameworkDeviceInfo.so
 libWPEFrameworkLocationSync.so
+libWPEFrameworkWifiControl.so
+libWPEFrameworkNetworkControl.so
 libWPEFrameworkRemoteControl.so
 libWPEFrameworkSnapshot.so
 libWPEFrameworkWebKitBrowser.so
@@ -122,6 +125,7 @@ libWPEFrameworkVirtualInput.so
 libWPEFrameworkTimeSync.so
 libWPEFrameworkWebShell.so
 libWPEFrameworkOCDM.so
+libWPEFrameworkDefinitions.so
 libwpe-0.2.so
 libWPEBackend-rdk.so
 libWPEBackend-default.so
