@@ -61,18 +61,18 @@ WPEWEBKIT_GCC_FINAL_CROSS_LANGUAGES = $(subst $(space),$(comma),$(WPEWEBKIT_GCC_
 HOST_WPEWEBKIT_GCC_FINAL_CONF_OPTS = \
 	$(HOST_WPEWEBKIT_GCC_COMMON_CONF_OPTS) \
 	--enable-languages=$(WPEWEBKIT_GCC_FINAL_CROSS_LANGUAGES) \
-	--with-build-time-tools=$(HOST_DIR)/usr/$(GNU_TARGET_NAME)/bin
+	--with-build-time-tools=$(HOST_DIR)/usr/local/$(GNU_TARGET_NAME)/bin
 
-HOST_WPEWEBKIT_GCC_FINAL_GCC_LIB_DIR = $(HOST_DIR)/usr/$(GNU_TARGET_NAME)/lib*
+HOST_WPEWEBKIT_GCC_FINAL_GCC_LIB_DIR = $(HOST_DIR)/usr/local/$(GNU_TARGET_NAME)/lib*
 # The kernel wants to use the -m4-nofpu option to make sure that it
 # doesn't use floating point operations.
 ifeq ($(BR2_sh4)$(BR2_sh4eb),y)
 HOST_WPEWEBKIT_GCC_FINAL_CONF_OPTS += "--with-multilib-list=m4,m4-nofpu"
-HOST_WPEWEBKIT_GCC_FINAL_GCC_LIB_DIR = $(HOST_DIR)/usr/$(GNU_TARGET_NAME)/lib/!m4*
+HOST_WPEWEBKIT_GCC_FINAL_GCC_LIB_DIR = $(HOST_DIR)/usr/local/$(GNU_TARGET_NAME)/lib/!m4*
 endif
 ifeq ($(BR2_sh4a)$(BR2_sh4aeb),y)
 HOST_WPEWEBKIT_GCC_FINAL_CONF_OPTS += "--with-multilib-list=m4a,m4a-nofpu"
-HOST_WPEWEBKIT_GCC_FINAL_GCC_LIB_DIR = $(HOST_DIR)/usr/$(GNU_TARGET_NAME)/lib/!m4*
+HOST_WPEWEBKIT_GCC_FINAL_GCC_LIB_DIR = $(HOST_DIR)/usr/local/$(GNU_TARGET_NAME)/lib/!m4*
 endif
 
 ifeq ($(BR2_bfin),y)
@@ -105,12 +105,12 @@ HOST_WPEWEBKIT_GCC_FINAL_MAKE_OPTS += $(HOST_WPEWEBKIT_GCC_COMMON_MAKE_OPTS)
 
 # Make sure we have 'cc'
 # Don't create the links in usr/bin, we want to keep to old gcc ones
-# define HOST_WPEWEBKIT_GCC_FINAL_CREATE_CC_SYMLINKS
-# 	if [ ! -e $(HOST_DIR)/usr/bin/$(GNU_TARGET_NAME)-cc ]; then \
-#		ln -f $(HOST_DIR)/usr/bin/$(GNU_TARGET_NAME)-gcc \
-#			$(HOST_DIR)/usr/bin/$(GNU_TARGET_NAME)-cc; \
-#	fi
-# endef
+define HOST_WPEWEBKIT_GCC_FINAL_CREATE_CC_SYMLINKS
+	if [ ! -e $(HOST_DIR)/usr/local/bin/$(GNU_TARGET_NAME)-cc ]; then \
+	ln -f $(HOST_DIR)/usr/local/bin/$(GNU_TARGET_NAME)-gcc \
+		$(HOST_DIR)/usr/local/bin/$(GNU_TARGET_NAME)-cc; \
+fi
+endef
 
 HOST_WPEWEBKIT_GCC_FINAL_POST_INSTALL_HOOKS += HOST_WPEWEBKIT_GCC_FINAL_CREATE_CC_SYMLINKS
 
