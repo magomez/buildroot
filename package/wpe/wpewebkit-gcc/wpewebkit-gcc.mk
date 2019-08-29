@@ -80,16 +80,16 @@ HOST_WPEWEBKIT_GCC_COMMON_DEPENDENCIES = \
 	$(if $(BR2_BINFMT_FLAT),host-elf2flt)
 
 HOST_WPEWEBKIT_GCC_COMMON_CONF_OPTS = \
-	--prefix=$(HOST_DIR)/usr/local \
+	--prefix=$(HOST_DIR)/opt \
 	--target=$(GNU_TARGET_NAME) \
 	--with-sysroot=$(STAGING_DIR) \
 	--disable-__cxa_atexit \
 	--with-gnu-ld \
 	--disable-libssp \
 	--disable-multilib \
-	--with-gmp=$(HOST_DIR)/usr/local \
-	--with-mpc=$(HOST_DIR)/usr/local \
-	--with-mpfr=$(HOST_DIR)/usr/local \
+	--with-gmp=$(HOST_DIR)/opt \
+	--with-mpc=$(HOST_DIR)/opt \
+	--with-mpfr=$(HOST_DIR)/opt \
 	--with-pkgversion="Buildroot $(BR2_VERSION_FULL)" \
 	--with-bugurl="http://bugs.buildroot.net/"
 
@@ -318,7 +318,7 @@ endif # BR2_CCACHE
 # Avoid that a .br_real is symlinked a second time.
 # Also create <arch>-linux-<tool> symlinks.
 define HOST_WPEWEBKIT_GCC_INSTALL_WRAPPER_AND_SIMPLE_SYMLINKS
-	$(Q)cd $(HOST_DIR)/usr/local/bin; \
+	$(Q)cd $(HOST_DIR)/opt/bin; \
 	for i in $(GNU_TARGET_NAME)-*; do \
 		case "$$i" in \
 		*.br_real) \
