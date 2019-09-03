@@ -14,7 +14,7 @@ if [ -f "${BOARD_DIR}/index.html" ]; then
 fi
 
 # FIXME: Copy keymap for Kaon remote
-if [ -f "${BOARD_DIR}/arris-ir-remote.json" ]; then
+if [ -f "${BOARD_DIR}/kaon-ir-remote.json" ]; then
 	mkdir -p "${TARGET_DIR}/usr/share/WPEFramework/RemoteControl/"
 	cp -pf "${BOARD_DIR}/kaon-ir-remote.json" "${TARGET_DIR}/usr/share/WPEFramework/RemoteControl/ir-remote.json"
 fi
