@@ -31,17 +31,22 @@ case "$1" in
 		ln -s $SOURCE/usr/share/mime $DESTINATION/share/mime
 		ln -s $SOURCE/usr/share/X11 $DESTINATION/share/X11
 		ln -s $SOURCE/usr/share/WPEFramework $DESTINATION/share/WPEFramework
+		ln -s $SOURCE/usr/share/content $DESTINATION/share/content
+		ln -s $SOURCE/usr/bin/content $DESTINATION/bin/content
 		ln -s $SOURCE/usr/share/fonts $DESTINATION/share/fonts
 		ln -s $SOURCE/etc/ssl $DESTINATION/etc/ssl
 		ln -s $SOURCE/etc/ssl $DESTINATION/lib/ssl
 		ln -s $SOURCE/etc/fonts $DESTINATION/etc/fonts
 		ln -s $SOURCE/etc/WPEFramework $DESTINATION/etc/WPEFramework
+		ln -s $SOURCE/etc/WideVine $DESTINATION/etc/WideVine
 		ln -s $SOURCE/usr/lib/gio $DESTINATION/lib/gio
 	fi
 	grep -q "/usr/share ext4" /proc/mounts && echo "/usr/share is already mounted" || mount -t ext4 --bind $DESTINATION/share/ /usr/share/
 	grep -q "/etc ext4" /proc/mounts && echo "/etc is already mounted" || mount -t ext4 --bind $DESTINATION/etc/ /etc/
 	grep -q "/usr/lib ext4" /proc/mounts && echo "/usr/lib is already mounted" || mount -t ext4 --bind $DESTINATION/lib/ /usr/lib/
 	grep -q "/usr/bin ext4" /proc/mounts && echo "/usr/bin is already mounted" || mount -t ext4 --bind $DESTINATION/bin /usr/bin/
+
+
 
 	
 	WPEFramework -c $SOURCE/etc/WPEFramework/config.json

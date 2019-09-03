@@ -4,6 +4,8 @@ WPEDatabaseProcess
 WPEStorageProcess
 WPEFramework
 WPEProcess
+libEGL.so
+libGLESv2.so
 gst-plugin-scanner
 gst-inspect-1.0
 gst-launch-1.0
@@ -12,6 +14,7 @@ libatomic.so
 libudev.so
 libcairo.so
 libcares.so
+libcobalt.so
 libcrypto.so
 libcurl.so
 libevdev.so
@@ -126,6 +129,8 @@ libWPEFrameworkTimeSync.so
 libWPEFrameworkWebShell.so
 libWPEFrameworkOCDM.so
 libWPEFrameworkDefinitions.so
+libWPEFrameworkCompositor.so
+libWPEFrameworkJSONRPCPlugin.so
 libwpe-0.2.so
 libWPEBackend-rdk.so
 libWPEBackend-default.so
@@ -142,3 +147,11 @@ libgstmatroska.so
 libgstopus.so
 libopus.so
 libcompositorclient.so
+libnxclient_local.so
+libnxclient.so
+libWPEFrameworkCobalt.so
+libWPEFrameworkDefinitions.so
+libv3ddriver.so
+content
+libwidevine_ce_cdm_shared.so
+keybox.bin
