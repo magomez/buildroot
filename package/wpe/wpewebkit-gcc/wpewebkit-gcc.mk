@@ -84,6 +84,7 @@ HOST_WPEWEBKIT_GCC_COMMON_CONF_OPTS = \
 	--target=$(GNU_TARGET_NAME) \
 	--with-sysroot=$(STAGING_DIR) \
 	--program-prefix=wpewebkit-$(GNU_TARGET_NAME)- \
+	--enable-version-specific-runtime-libs \
 	--disable-__cxa_atexit \
 	--with-gnu-ld \
 	--disable-libssp \
