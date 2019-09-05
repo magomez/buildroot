@@ -67,6 +67,33 @@ endif
 
 ifneq ($(BR2_GCC_VERSION_6_X), y)
 WPEWEBKIT_DEPENDENCIES += host-wpewebkit-gcc-final
+
+define WPEWEBKIT_PRE_CONFIGURE_CMDS
+	$(Q)cd $(HOST_DIR)/usr/bin; \
+	if [ ! -e $(HOST_DIR)/usr/bin/$(GNU_TARGET_NAME)-gcc.br_real.old ]; then \
+		mv $(GNU_TARGET_NAME)-gcc.br_real $(GNU_TARGET_NAME)-gcc.br_real.old; \
+		ln -sf wpewebkit-$(GNU_TARGET_NAME)-gcc $(GNU_TARGET_NAME)-gcc.br_real; \
+	fi; \
+	if [ ! -e $(HOST_DIR)/usr/bin/$(GNU_TARGET_NAME)-g++.br_real.old ]; then \
+		mv $(GNU_TARGET_NAME)-g++.br_real $(GNU_TARGET_NAME)-g++.br_real.old; \
+		ln -sf wpewebkit-$(GNU_TARGET_NAME)-g++ $(GNU_TARGET_NAME)-g++.br_real; \
+	fi;
+endef
+WPEWEBKIT_PRE_CONFIGURE_HOOKS += WPEWEBKIT_PRE_CONFIGURE_CMDS
+
+define WPEWEBKIT_POST_BUILD_CMDS
+	$(Q)cd $(HOST_DIR)/usr/bin; \
+	if [ -e $(HOST_DIR)/usr/bin/$(GNU_TARGET_NAME)-gcc.br_real.old ]; then \
+		rm $(GNU_TARGET_NAME)-gcc.br_real; \
+		mv $(GNU_TARGET_NAME)-gcc.br_real.old $(GNU_TARGET_NAME)-gcc.br_real; \
+	fi; \
+	if [ -e $(HOST_DIR)/usr/bin/$(GNU_TARGET_NAME)-g++.br_real.old ]; then \
+		rm $(GNU_TARGET_NAME)-g++.br_real; \
+		mv $(GNU_TARGET_NAME)-g++.br_real.old $(GNU_TARGET_NAME)-g++.br_real; \
+	fi;
+endef
+WPEWEBKIT_POST_BUILD_HOOKS += WPEWEBKIT_POST_BUILD_CMDS
+WPEWEBKIT_STATIC_LIBSTDC_FLAGS = -static-libstdc++
 endif
 
 ifeq ($(WPEWEBKIT_BUILD_WEBKIT),y)
@@ -231,10 +258,10 @@ WPEWEBKIT_FLAGS += -DUSE_LD_GOLD=ON
 endif
 
 WPEWEBKIT_EXTRA_FLAGS += \
-	-DCMAKE_C_FLAGS_RELEASE="$(WPEWEBKIT_SYMBOL_FLAGS) $(WPEWEBKIT_DEBUG_BUILD_FLAGS) -Wno-cast-align" \
-	-DCMAKE_CXX_FLAGS_RELEASE="$(WPEWEBKIT_SYMBOL_FLAGS) $(WPEWEBKIT_DEBUG_BUILD_FLAGS) -Wno-cast-align" \
-	-DCMAKE_C_FLAGS_DEBUG="$(WPEWEBKIT_SYMBOL_FLAGS) $(WPEWEBKIT_DEBUG_BUILD_FLAGS) -Wno-cast-align" \
-	-DCMAKE_CXX_FLAGS_DEBUG="$(WPEWEBKIT_SYMBOL_FLAGS) $(WPEWEBKIT_DEBUG_BUILD_FLAGS) -Wno-cast-align"
+	-DCMAKE_C_FLAGS_RELEASE="$(WPEWEBKIT_SYMBOL_FLAGS) $(WPEWEBKIT_DEBUG_BUILD_FLAGS) $(WPEWEBKIT_STATIC_LIBSTDC_FLAGS) -Wno-cast-align" \
+	-DCMAKE_CXX_FLAGS_RELEASE="$(WPEWEBKIT_SYMBOL_FLAGS) $(WPEWEBKIT_DEBUG_BUILD_FLAGS) $(WPEWEBKIT_STATIC_LIBSTDC_FLAGS) -Wno-cast-align" \
+	-DCMAKE_C_FLAGS_DEBUG="$(WPEWEBKIT_SYMBOL_FLAGS) $(WPEWEBKIT_DEBUG_BUILD_FLAGS) $(WPEWEBKIT_STATIC_LIBSTDC_FLAGS) -Wno-cast-align" \
+	-DCMAKE_CXX_FLAGS_DEBUG="$(WPEWEBKIT_SYMBOL_FLAGS) $(WPEWEBKIT_DEBUG_BUILD_FLAGS) $(WPEWEBKIT_STATIC_LIBSTDC_FLAGS) -Wno-cast-align"
 
 WPEWEBKIT_CONF_OPTS = \
 	-DPORT=$(WPEWEBKIT_USE_PORT) \
