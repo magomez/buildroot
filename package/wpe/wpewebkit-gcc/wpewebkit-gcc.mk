@@ -80,16 +80,17 @@ HOST_WPEWEBKIT_GCC_COMMON_DEPENDENCIES = \
 	$(if $(BR2_BINFMT_FLAT),host-elf2flt)
 
 HOST_WPEWEBKIT_GCC_COMMON_CONF_OPTS = \
-	--prefix=$(HOST_DIR)/opt \
+	--prefix=$(HOST_DIR)/usr \
 	--target=$(GNU_TARGET_NAME) \
 	--with-sysroot=$(STAGING_DIR) \
+	--program-prefix=wpewebkit-$(GNU_TARGET_NAME)- \
 	--disable-__cxa_atexit \
 	--with-gnu-ld \
 	--disable-libssp \
 	--disable-multilib \
-	--with-gmp=$(HOST_DIR)/opt \
-	--with-mpc=$(HOST_DIR)/opt \
-	--with-mpfr=$(HOST_DIR)/opt \
+	--with-gmp=$(HOST_DIR)/usr \
+	--with-mpc=$(HOST_DIR)/usr \
+	--with-mpfr=$(HOST_DIR)/usr \
 	--with-pkgversion="Buildroot $(BR2_VERSION_FULL)" \
 	--with-bugurl="http://bugs.buildroot.net/"
 
@@ -230,39 +231,6 @@ HOST_WPEWEBKIT_GCC_COMMON_CONF_OPTS += \
 	--without-long-double-128
 endif
 
-HOST_WPEWEBKIT_GCC_COMMON_TOOLCHAIN_WRAPPER_ARGS += -DBR_CROSS_PATH_SUFFIX='".br_real"'
-ifeq ($(BR2_GCC_ARCH_HAS_CONFIGURABLE_DEFAULTS),)
-ifeq ($(call qstrip,$(BR2_GCC_TARGET_CPU_REVISION)),)
-HOST_WPEWEBKIT_GCC_COMMON_WRAPPER_TARGET_CPU := $(call qstrip,$(BR2_GCC_TARGET_CPU))
-else
-HOST_WPEWEBKIT_GCC_COMMON_WRAPPER_TARGET_CPU := $(call qstrip,$(BR2_GCC_TARGET_CPU)-$(BR2_GCC_TARGET_CPU_REVISION))
-endif
-HOST_WPEWEBKIT_GCC_COMMON_WRAPPER_TARGET_ARCH := $(call qstrip,$(BR2_GCC_TARGET_ARCH))
-HOST_WPEWEBKIT_GCC_COMMON_WRAPPER_TARGET_ABI := $(call qstrip,$(BR2_GCC_TARGET_ABI))
-HOST_WPEWEBKIT_GCC_COMMON_WRAPPER_TARGET_FPU := $(call qstrip,$(BR2_GCC_TARGET_FPU))
-HOST_WPEWEBKIT_GCC_COMMON_WRAPPER_TARGET_FLOAT_ABI := $(call qstrip,$(BR2_GCC_TARGET_FLOAT_ABI))
-HOST_WPEWEBKIT_GCC_COMMON_WRAPPER_TARGET_MODE := $(call qstrip,$(BR2_GCC_TARGET_MODE))
-
-ifneq ($(HOST_WPEWEBKIT_GCC_COMMON_WRAPPER_TARGET_ARCH),)
-HOST_WPEWEBKIT_GCC_COMMON_TOOLCHAIN_WRAPPER_ARGS += -DBR_ARCH='"$(HOST_WPEWEBKIT_GCC_COMMON_WRAPPER_TARGET_ARCH)"'
-endif
-ifneq ($(HOST_WPEWEBKIT_GCC_COMMON_WRAPPER_TARGET_CPU),)
-HOST_WPEWEBKIT_GCC_COMMON_TOOLCHAIN_WRAPPER_ARGS += -DBR_CPU='"$(HOST_WPEWEBKIT_GCC_COMMON_WRAPPER_TARGET_CPU)"'
-endif
-ifneq ($(HOST_WPEWEBKIT_GCC_COMMON_WRAPPER_TARGET_ABI),)
-HOST_WPEWEBKIT_GCC_COMMON_TOOLCHAIN_WRAPPER_ARGS += -DBR_ABI='"$(HOST_WPEWEBKIT_GCC_COMMON_WRAPPER_TARGET_ABI)"'
-endif
-ifneq ($(HOST_WPEWEBKIT_GCC_COMMON_WRAPPER_TARGET_FPU),)
-HOST_WPEWEBKIT_GCC_COMMON_TOOLCHAIN_WRAPPER_ARGS += -DBR_FPU='"$(HOST_WPEWEBKIT_GCC_COMMON_WRAPPER_TARGET_FPU)"'
-endif
-ifneq ($(HOST_WPEWEBKIT_GCC_COMMON_WRAPPER_TARGET_FLOATABI_),)
-HOST_WPEWEBKIT_GCC_COMMON_TOOLCHAIN_WRAPPER_ARGS += -DBR_FLOAT_ABI='"$(HOST_WPEWEBKIT_GCC_COMMON_WRAPPER_TARGET_FLOATABI_)"'
-endif
-ifneq ($(HOST_WPEWEBKIT_GCC_COMMON_WRAPPER_TARGET_MODE),)
-HOST_WPEWEBKIT_GCC_COMMON_TOOLCHAIN_WRAPPER_ARGS += -DBR_MODE='"$(HOST_WPEWEBKIT_GCC_COMMON_WRAPPER_TARGET_MODE)"'
-endif
-endif # !BR2_GCC_ARCH_HAS_CONFIGURABLE_DEFAULTS
-
 # For gcc-initial, we need to tell gcc that the C library will be
 # providing the ssp support, as it can't guess it since the C library
 # hasn't been built yet.
@@ -272,9 +240,6 @@ endif # !BR2_GCC_ARCH_HAS_CONFIGURABLE_DEFAULTS
 # uClibc, so let's be explicit as well.
 HOST_WPEWEBKIT_GCC_COMMON_MAKE_OPTS = \
 	gcc_cv_libc_provides_ssp=$(if $(BR2_TOOLCHAIN_HAS_SSP),yes,no)
-
-ifeq ($(BR2_CCACHE),y)
-HOST_WPEWEBKIT_GCC_COMMON_CCACHE_HASH_FILES += $(DL_DIR)/$(GCC_SOURCE)
 
 # Cfr. PATCH_BASE_DIRS in .stamp_patched, but we catch both versioned
 # and unversioned patches unconditionally. Moreover, to facilitate the
@@ -296,48 +261,3 @@ ifneq ($(BR2_SOFT_FLOAT),)
 HOST_WPEWEBKIT_GCC_COMMON_CCACHE_HASH_FILES += package/wpewebkit-gcc/$(WPEWEBKIT_GCC_VERSION)/1000-powerpc-link-with-math-lib.patch.conditional
 endif
 endif
-
-# _CONF_OPTS contains some references to the absolute path of $(HOST_DIR)
-# and a reference to the Buildroot git revision (BR2_VERSION_FULL),
-# so substitute those away.
-HOST_WPEWEBKIT_GCC_COMMON_TOOLCHAIN_WRAPPER_ARGS += -DBR_CCACHE_HASH=\"`\
-	printf '%s\n' $(subst $(HOST_DIR),@HOST_DIR@,\
-		$(subst --with-pkgversion="Buildroot $(BR2_VERSION_FULL)",,$($(PKG)_CONF_OPTS))) \
-		| sha256sum - $(HOST_WPEWEBKIT_GCC_COMMON_CCACHE_HASH_FILES) \
-		| cut -c -64 | tr -d '\n'`\"
-endif # BR2_CCACHE
-
-# The LTO support in gcc creates wrappers for ar, ranlib and nm which load
-# the lto plugin. These wrappers are called *-gcc-ar, *-gcc-ranlib, and
-# *-gcc-nm and should be used instead of the real programs when -flto is
-# used. However, we should not add the toolchain wrapper for them, and they
-# match the *cc-* pattern. Therefore, an additional case is added for *-ar,
-# *-ranlib and *-nm.
-# According to gfortran manpage, it supports all options supported by gcc, so
-# add gfortran to the list of the program called via the Buildroot wrapper.
-# Avoid that a .br_real is symlinked a second time.
-# Also create <arch>-linux-<tool> symlinks.
-define HOST_WPEWEBKIT_GCC_INSTALL_WRAPPER_AND_SIMPLE_SYMLINKS
-	$(Q)cd $(HOST_DIR)/opt/bin; \
-	for i in $(GNU_TARGET_NAME)-*; do \
-		case "$$i" in \
-		*.br_real) \
-			;; \
-		*-ar|*-ranlib|*-nm) \
-			ln -snf $$i $(ARCH)-linux$${i##$(GNU_TARGET_NAME)}; \
-			;; \
-		*cc|*cc-*|*++|*++-*|*cpp|*-gfortran) \
-			rm -f $$i.br_real; \
-			mv $$i $$i.br_real; \
-			ln -sf toolchain-wrapper $$i; \
-			ln -sf toolchain-wrapper $(ARCH)-linux$${i##$(GNU_TARGET_NAME)}; \
-			ln -snf $$i.br_real $(ARCH)-linux$${i##$(GNU_TARGET_NAME)}.br_real; \
-			;; \
-		*) \
-			ln -snf $$i $(ARCH)-linux$${i##$(GNU_TARGET_NAME)}; \
-			;; \
-		esac; \
-	done
-
-endef
-
