@@ -42,7 +42,7 @@ WPEWEBKIT_DEPENDENCIES = host-bison host-cmake host-flex host-gperf host-ruby ic
 
 ifeq ($(WPEWEBKIT_BUILD_WEBKIT),y)
 WPEWEBKIT_DEPENDENCIES += wpebackend libgcrypt libgles libegl libepoxy cairo freetype \
-	fontconfig harfbuzz libxml2 libxslt sqlite libsoup jpeg libpng
+	fontconfig harfbuzz libxml2 libxslt sqlite libsoup jpeg libpng lttng-tools lttng-libust
 endif
 
 WPEWEBKIT_EXTRA_FLAGS = -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
