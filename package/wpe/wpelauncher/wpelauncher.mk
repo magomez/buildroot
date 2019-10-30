@@ -10,7 +10,6 @@ WPELAUNCHER_SITE = $(call github,WebPlatformForEmbedded,WPEWebKitLauncher,$(WPEL
 WPELAUNCHER_DEPENDENCIES = wpewebkit
 
 define WPELAUNCHER_BINS
-	$(INSTALL) -D -m 0644 package/wpe/wpelauncher/wpe.{txt,conf} $(BINARIES_DIR)/
 	$(INSTALL) -D -m 0755 package/wpe/wpelauncher/wpe $(TARGET_DIR)/usr/bin
 endef
 

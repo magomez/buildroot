@@ -1,19 +1,17 @@
 #!/bin/sh
 
-WPE_URL_FILE="/boot/wpe.txt"
-
 start() {
 	echo -n "Starting WPE: "
-	if [ -e "$WPE_URL_FILE" ]; then
-		URL=`head -1 $WPE_URL_FILE`
-		if [ -n "$URL" ]; then
-			/usr/bin/wpe --loop $URL &> /dev/null &
-			echo "OK"
-		else
-			echo "NO URL"
-		fi
+	if [[ -z "${COG_URL}" ]]; then
+		URL="http://www.igalia.com"
 	else
-		echo "NO FILE"
+		URL="${COG_URL}"
+	fi
+	if [ -n "$URL" ]; then
+		/usr/bin/wpe --loop $URL &> /dev/null &
+		echo "OK"
+	else
+		echo "NO URL"
 	fi
 }
 

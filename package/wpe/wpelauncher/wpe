@@ -11,7 +11,7 @@ export GST_GL_WINDOW=dummy
 export CAIRO_GL_COMPOSITOR=noaa
 
 # WebInspector
-export WEBKIT_INSPECTOR_SERVER=0.0.0.0:9998
+export WEBKIT_LEGACY_INSPECTOR_SERVER=0.0.0.0:9998
 
 # FPS
 #export WPE_THREADED_COMPOSITOR_FPS=1
@@ -21,21 +21,6 @@ export WEBKIT_INSPECTOR_SERVER=0.0.0.0:9998
 
 # RPI touch support
 #export WPE_BCMRPI_TOUCH=1
-
-WPE_UPDATE="/usr/bin/wpe-update"
-if [ -e "$WPE_UPDATE" ];
-then
-	WPE_UPDATE_RESULT=$($WPE_UPDATE)
-fi
-
-export TZ=$(wget -qO- http://jsonip.metrological.com/ | sed -e 's/^.*"tz":"\([^"]*\)".*$/\1/')
-
-WPE_CONF_FILE="/boot/wpe.conf"
-WPE_CONFIG=""
-if [ -e "$WPE_CONF_FILE" ];
-then
-	WPE_CONFIG=$(grep -v '^#' $WPE_CONF_FILE | tr -d "\r" | tr "\n" " " | tr -s " ")
-fi
 
 # Core dumps
 #echo 1 > /proc/sys/kernel/core_uses_pid
