@@ -4,8 +4,8 @@
 #
 ################################################################################
 
-WPELAUNCHER_VERSION = bee8c4dfbb437e1865b93f96898078b9279220ef
-WPELAUNCHER_SITE = $(call github,WebPlatformForEmbedded,WPEWebKitLauncher,$(WPELAUNCHER_VERSION))
+WPELAUNCHER_VERSION = d453fb9c610888e9d89e37306406344aa63432ee
+WPELAUNCHER_SITE = $(call github,magomez,WPEWebKitLauncher,$(WPELAUNCHER_VERSION))
 
 WPELAUNCHER_DEPENDENCIES = wpewebkit
 
