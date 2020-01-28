@@ -10,6 +10,27 @@ GENIMAGE_TMP="${BUILD_DIR}/genimage.tmp"
 for arg in "$@"
 do
 	case "${arg}" in
+		--add-vc4-fkms-v3d)
+		if ! grep -qE '^dtoverlay=vc4-fkms-v3d' "${BINARIES_DIR}/rpi-firmware/config.txt"; then
+			echo "Adding 'dtoverlay=vc4-fkms-v3d' to config.txt."
+			cat << __EOF__ >> "${BINARIES_DIR}/rpi-firmware/config.txt"
+
+# Add vc4-fkms-v3d
+dtoverlay=vc4-fkms-v3d
+__EOF__
+		fi
+		;;
+		--1080p)
+		if ! grep -qE '^hdmi_mode=16' "${BINARIES_DIR}/rpi-firmware/config.txt"; then
+			echo "Adding 1080p mode to config.txt."
+			cat << __EOF__ >> "${BINARIES_DIR}/rpi-firmware/config.txt"
+
+# Select 1080p
+hdmi_group=1
+hdmi_mode=16
+__EOF__
+		fi
+		;;
 		--add-miniuart-bt-overlay)
 		if ! grep -qE '^dtoverlay=' "${BINARIES_DIR}/rpi-firmware/config.txt"; then
 			echo "Adding 'dtoverlay=miniuart-bt' to config.txt (fixes ttyAMA0 serial console)."
