@@ -1,0 +1,24 @@
+diff --git a/Source/WebCore/page/csp/ContentSecurityPolicy.cpp b/Source/WebCore/page/csp/ContentSecurityPolicy.cpp
+index 8f0f6bf53b03..a8888eed5fec 100644
+--- a/Source/WebCore/page/csp/ContentSecurityPolicy.cpp
++++ b/Source/WebCore/page/csp/ContentSecurityPolicy.cpp
+@@ -499,6 +499,19 @@ bool ContentSecurityPolicy::allowFrameAncestors(const Frame& frame, const URL& u
+ 
+ bool ContentSecurityPolicy::overridesXFrameOptions() const
+ {
++    static bool ignoreXFrameOrigin = false;
++    static bool ignoreXFrameOriginInitialized = false;
++
++    if (!ignoreXFrameOriginInitialized) {
++        const char* envValue  = getenv("WEBKIT_IGNORE_X_FRAME_ORIGIN");
++        if (envValue && strcmp(envValue, "0"))
++            ignoreXFrameOrigin = true;
++        ignoreXFrameOriginInitialized = true;
++    }
++
++    if (ignoreXFrameOrigin)
++        return true;
++
+     // If a resource is delivered with an policy that includes a directive named frame-ancestors and whose disposition
+     // is "enforce", then the X-Frame-Options header MUST be ignored.
+     // https://www.w3.org/TR/CSP3/#frame-ancestors-and-frame-options
