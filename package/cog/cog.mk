@@ -19,4 +19,11 @@ COG_CONF_OPTS = \
 	-DCOG_PLATFORM_DRM=ON \
 	-DCOG_HOME_URI='$(call qstrip,$(BR2_PACKAGE_COG_PROGRAMS_HOME_URI))'
 
+
+define COG_LAUNCHER
+	$(INSTALL) -D -m 0755 package/cog/wpe $(TARGET_DIR)/usr/bin
+endef
+
+COG_POST_INSTALL_TARGET_HOOKS += COG_LAUNCHER
+
 $(eval $(cmake-package))
