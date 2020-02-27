@@ -1,0 +1,114 @@
+diff --git a/Source/WebKit/UIProcess/API/glib/WebKitSettings.cpp b/Source/WebKit/UIProcess/API/glib/WebKitSettings.cpp
+index 6189747baaf3..2961fd743519 100644
+--- a/Source/WebKit/UIProcess/API/glib/WebKitSettings.cpp
++++ b/Source/WebKit/UIProcess/API/glib/WebKitSettings.cpp
+@@ -169,6 +169,7 @@ enum {
+ #endif
+     PROP_ENABLE_JAVASCRIPT_MARKUP,
+     PROP_ENABLE_MEDIA,
++    PROP_ENABLE_WEB_SECURITY,
+ };
+ 
+ static void webKitSettingsDispose(GObject* object)
+@@ -398,6 +399,9 @@ static void webKitSettingsSetProperty(GObject* object, guint propId, const GValu
+     case PROP_ENABLE_MEDIA:
+         webkit_settings_set_enable_media(settings, g_value_get_boolean(value));
+         break;
++    case PROP_ENABLE_WEB_SECURITY:
++        webkit_settings_set_enable_web_security(settings, g_value_get_boolean(value));
++        break;
+     default:
+         G_OBJECT_WARN_INVALID_PROPERTY_ID(object, propId, paramSpec);
+         break;
+@@ -586,6 +590,9 @@ static void webKitSettingsGetProperty(GObject* object, guint propId, GValue* val
+     case PROP_ENABLE_MEDIA:
+         g_value_set_boolean(value, webkit_settings_get_enable_media(settings));
+         break;
++    case PROP_ENABLE_WEB_SECURITY:
++        g_value_set_boolean(value, webkit_settings_get_enable_web_security(settings));
++        break;
+     default:
+         G_OBJECT_WARN_INVALID_PROPERTY_ID(object, propId, paramSpec);
+         break;
+@@ -1514,6 +1521,21 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
+             TRUE,
+             readWriteConstructParamFlags));
+ 
++    /**
++     * WebKitSettings:enable-web-security:
++     *
++     * Enable or disable web security. This setting is enabled by
++     * default.
++     *
++     * Since: 2.26
++     */
++    g_object_class_install_property(gObjectClass,
++        PROP_ENABLE_WEB_SECURITY,
++        g_param_spec_boolean("enable-web-security",
++            _("Enable web security"),
++            _("Whether web security is enabled"),
++            TRUE,
++            readWriteConstructParamFlags));
+ }
+ 
+ WebPreferences* webkitSettingsGetPreferences(WebKitSettings* settings)
+@@ -3742,3 +3764,42 @@ void webkit_settings_set_enable_media(WebKitSettings* settings, gboolean enabled
+     priv->preferences->setMediaEnabled(enabled);
+     g_object_notify(G_OBJECT(settings), "enable-media");
+ }
++
++/**
++ * webkit_settings_get_enable_web_security:
++ * @settings: a #WebKitSettings
++ *
++ * Get the #WebKitSettings:enable-web-security property.
++ *
++ * Returns: %TRUE if media support is enabled or %FALSE otherwise.
++ *
++ * Since: 2.26
++ */
++gboolean webkit_settings_get_enable_web_security(WebKitSettings* settings)
++{
++    g_return_val_if_fail(WEBKIT_IS_SETTINGS(settings), FALSE);
++
++    return settings->priv->preferences->webSecurityEnabled();
++}
++
++/**
++ * webkit_settings_set_enable_web_security:
++ * @settings: a #WebKitSettings
++ * @enabled: Value to be set
++ *
++ * Set the #WebKitSettings:enable-web-security property.
++ *
++ * Since: 2.26
++ */
++void webkit_settings_set_enable_web_security(WebKitSettings* settings, gboolean enabled)
++{
++    g_return_if_fail(WEBKIT_IS_SETTINGS(settings));
++
++    WebKitSettingsPrivate* priv = settings->priv;
++    bool currentValue = priv->preferences->webSecurityEnabled();
++    if (currentValue == enabled)
++        return;
++
++    priv->preferences->setWebSecurityEnabled(enabled);
++    g_object_notify(G_OBJECT(settings), "enable-web-security");
++}
+diff --git a/Source/WebKit/UIProcess/API/wpe/WebKitSettings.h b/Source/WebKit/UIProcess/API/wpe/WebKitSettings.h
+index 52404d74cfe4..9c35a4e45641 100644
+--- a/Source/WebKit/UIProcess/API/wpe/WebKitSettings.h
++++ b/Source/WebKit/UIProcess/API/wpe/WebKitSettings.h
+@@ -456,6 +456,12 @@ WEBKIT_API void
+ webkit_settings_set_enable_media                               (WebKitSettings *settings,
+                                                                 gboolean        enabled);
+ 
++WEBKIT_API gboolean
++webkit_settings_get_enable_web_security                        (WebKitSettings *settings);
++
++WEBKIT_API void
++webkit_settings_set_enable_web_security                        (WebKitSettings *settings,
++                                                                gboolean        enabled);
+ G_END_DECLS
+ 
+ #endif /* WebKitSettings_h */

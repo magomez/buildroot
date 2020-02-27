@@ -22,6 +22,7 @@ COG_CONF_OPTS = \
 
 define COG_LAUNCHER
 	$(INSTALL) -D -m 0755 package/cog/wpe $(TARGET_DIR)/usr/bin
+	$(INSTALL) -D -m 0644 package/cog/websettings.cfg $(TARGET_DIR)/root
 endef
 
 COG_POST_INSTALL_TARGET_HOOKS += COG_LAUNCHER

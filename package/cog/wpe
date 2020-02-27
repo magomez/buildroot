@@ -6,4 +6,4 @@ export WPEBACKEND_FDO_FORCE_DMABUF_LINEAR_MODIFIERS=1
 # Ignore X-Frame-Origin
 export WEBKIT_IGNORE_X_FRAME_ORIGIN=1
 
-cd /root && eval "cog -P drm \"$1\""
+cd /root && eval "cog -P drm -C /root/websettings.cfg \"$1\""
