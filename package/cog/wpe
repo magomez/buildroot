@@ -6,4 +6,25 @@ export WPEBACKEND_FDO_FORCE_DMABUF_LINEAR_MODIFIERS=1
 # Ignore X-Frame-Origin
 export WEBKIT_IGNORE_X_FRAME_ORIGIN=1
 
-cd /root && eval "cog -P drm -C /root/websettings.cfg \"$1\""
+# Platform parameter
+PLATFORM="-P drm"
+
+# WebSettings parameter
+WEBSETTINGS="-C /root/websettings.cfg"
+
+# Whether there's a proxy on the http_proxy env var
+if [ -z "${http_proxy}" ]; then
+    PROXY=""
+else
+    PROXY="--proxy \"${http_proxy}\""
+fi
+
+# URL
+if [ -n "$1" ]; then
+    URL=$1
+else
+    URL="https://wpewebkit.org"
+fi
+
+
+cd /root && eval "cog $PLATFORM $WEBSETTINGS $PROXY \"$URL\""

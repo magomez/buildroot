@@ -1,0 +1,42 @@
+diff --git a/cog.c b/cog.c
+index 07def04..7bb408e 100644
+--- a/cog.c
++++ b/cog.c
+@@ -53,6 +53,8 @@ static struct {
+         enum webprocess_fail_action action_id;
+     } on_failure;
+     char *web_extensions_dir;
++    char *proxy;
++    const char **ignore_hosts;
+ } s_options = {
+     .scale_factor = 1.0,
+ #if HAVE_DEVICE_SCALING
+@@ -103,6 +105,12 @@ static GOptionEntry s_cli_options[] =
+     { "web-extensions-dir", '\0', 0, G_OPTION_ARG_STRING, &s_options.web_extensions_dir,
+       "Load Web Extensions from given directory.",
+       "PATH"},
++    { "proxy", '\0', 0, G_OPTION_ARG_STRING, &s_options.proxy,
++        "Proxy to use",
++        "PROXY" },
++    { "ignore-hosts", '\0', 0, G_OPTION_ARG_STRING_ARRAY, &s_options.ignore_hosts,
++        "Set proxy ignore hosts",
++        "HOSTS" },
+     { G_OPTION_REMAINING, '\0', 0, G_OPTION_ARG_FILENAME_ARRAY, &s_options.arguments,
+         "", "[URL]" },
+     { NULL }
+@@ -284,6 +292,15 @@ on_handle_local_options (GApplication *application,
+                                                          s_options.web_extensions_dir);
+     }
+ 
++    if (s_options.proxy != NULL) {
++        WebKitNetworkProxySettings *webkitProxySettings = webkit_network_proxy_settings_new(s_options.proxy,
++                                                                                            s_options.ignore_hosts);
++        webkit_web_context_set_network_proxy_settings(cog_shell_get_web_context (shell),
++                                                      WEBKIT_NETWORK_PROXY_MODE_CUSTOM,
++                                                      webkitProxySettings);
++        webkit_network_proxy_settings_free(webkitProxySettings);
++    }
++
+     return -1;  /* Continue startup. */
+ }
+ 
