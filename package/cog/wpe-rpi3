@@ -1,0 +1,24 @@
+#!/bin/sh
+
+# Ignore X-Frame-Origin
+export WEBKIT_IGNORE_X_FRAME_ORIGIN=1
+
+# WebSettings parameter
+WEBSETTINGS="-C /root/websettings.cfg"
+
+# Whether there's a proxy on the http_proxy env var
+if [ -z "${http_proxy}" ]; then
+    PROXY=""
+else
+    PROXY="--proxy \"${http_proxy}\""
+fi
+
+# URL
+if [ -n "$1" ]; then
+    URL=$1
+else
+    URL="https://wpewebkit.org"
+fi
+
+
+cd /root && eval "cog $WEBSETTINGS $PROXY \"$URL\""
