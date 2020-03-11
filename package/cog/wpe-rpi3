@@ -13,6 +13,18 @@ else
     PROXY="--proxy \"${http_proxy}\""
 fi
 
+# Whether there's a semicolon separated list of hosts to avoid proxy on the no_proxy env var.
+# Example: "www.google.com;www.igalia.com;192.168.1.1"
+# See https://webkitgtk.org/reference/webkit2gtk/stable/WebKitNetworkProxySettings.html#webkit-network-proxy-settings-new
+if [ -z "${no_proxy}" ]; then
+    NO_PROXY=""
+else
+    hosts=$(echo $no_proxy | tr ";" "\n")
+    for i in $hosts; do
+        NO_PROXY=$NO_PROXY" --ignore-host \"$i\""
+    done
+fi
+
 # URL
 if [ -n "$1" ]; then
     URL=$1
@@ -20,5 +32,4 @@ else
     URL="https://wpewebkit.org"
 fi
 
-
-cd /root && eval "cog $WEBSETTINGS $PROXY \"$URL\""
+cd /root && eval "cog --doc-viewer $WEBSETTINGS $PROXY $NO_PROXY \"$URL\""

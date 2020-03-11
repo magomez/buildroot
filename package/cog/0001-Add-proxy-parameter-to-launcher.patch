@@ -1,5 +1,5 @@
 diff --git a/cog.c b/cog.c
-index 07def04..7bb408e 100644
+index 07def04..d11fb4b 100644
 --- a/cog.c
 +++ b/cog.c
 @@ -53,6 +53,8 @@ static struct {
@@ -18,7 +18,7 @@ index 07def04..7bb408e 100644
 +    { "proxy", '\0', 0, G_OPTION_ARG_STRING, &s_options.proxy,
 +        "Proxy to use",
 +        "PROXY" },
-+    { "ignore-hosts", '\0', 0, G_OPTION_ARG_STRING_ARRAY, &s_options.ignore_hosts,
++    { "ignore-host", '\0', 0, G_OPTION_ARG_STRING_ARRAY, &s_options.ignore_hosts,
 +        "Set proxy ignore hosts",
 +        "HOSTS" },
      { G_OPTION_REMAINING, '\0', 0, G_OPTION_ARG_FILENAME_ARRAY, &s_options.arguments,
